@@ -1,0 +1,91 @@
+
+####----------------Here a list of commands executed for the RiboTaper analysis.(version 1.2, November 2015)------------------
+
+
+###################################################################
+#    This file is part of RiboTaper.
+#    RiboTaper is a method for defining traslated ORFs using
+#    Ribosome Profiling data.
+#   
+#    Copyright (C) 2015  Lorenzo Calviello
+#
+#    RiboTaper is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+
+#    RiboTaper is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with RiboTaper.  If not, see <http://www.gnu.org/licenses/>.
+#
+#    Contact: Lorenzo.Calviello@mdc-berlin.de
+#######################################################################
+
+
+
+####Unpack the provided files on our website (https://ohlerlab.mdc-berlin.de/software/):
+
+#alignment_files.tar.gz
+#annotation_human_daniorerio.tar.gz
+#RiboTaper_v1.0.tar.gz
+
+
+tar -zxvf alignment_files.tar.gz
+tar -zxvf annotation_human_daniorerio.tar.gz
+tar -zxvf RiboTaper_v1.0.tar.gz
+
+
+#### create annotation files for human using ccds and appris tags (Gencode 19 + hg19 genome):
+
+scripts/create_annotations_files.bash annotation_human_daniorerio/gencode.v19.annotation.gtf annotation_human_daniorerio/hg19_genome.fa true true annotation_dir_human bedtools_dir/ scripts/
+
+
+#### create annotation files Danio rerio created without using any tags (no ccds, no appris):
+
+
+scripts/create_annotations_files.bash annotation_human_daniorerio/Danio_rerio.Zv9.76_noscaff.gtf annotation_human_daniorerio/Danio_rerio.Zv9.dna.toplevel_noscaff.fa false false annotation_dir_zebr bedtools_dir/ scripts/
+
+
+#### create new directories for the provided experiments
+
+mkdir HEK_this_study HEK_Gao Zebrafish_Bazzini_5hPF
+
+
+
+### go inside the first directory
+
+cd HEK_this_study
+
+
+### submit bash script for SGE computing, using 7 cores and 8 Gigabyte of RAM per core
+### HEK293 data for this study, Ribo-seq newly generated + RNA seq from http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE49831
+### annotation files from human 
+
+qsub ../commands/ribotaper_this_study.q
+
+
+### go inside the second directory
+
+cd ../HEK_Gao
+
+### submit bash script for SGE computing, using 7 cores and 8 Gigabyte of RAM per core
+### HEK293 data for Gao et al, cycloheximide (Ribo) and RNA-seq experiments for the "control" sample: http://www.ncbi.nlm.nih.gov/sra/SRX740748%5Baccn%5D http://www.ncbi.nlm.nih.gov/sra/SRX740751%5Baccn%5D
+
+qsub ../commands/ribotaper_Gao.q
+
+
+
+### go inside the third directory
+
+cd ../Zebrafish_Bazzini_5hPF
+
+
+### Danio Rerio data for 5h_PF, from http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE53693
+### submit bash script for SGE computing, using 7 cores and 8 Gigabyte of RAM per core
+
+qsub ../commands/ribotaper_Zebr.q
+

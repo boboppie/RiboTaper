@@ -1,3 +1,5 @@
+# This is not an office repository of RiboTaper, this was copied from https://ohlerlab.mdc-berlin.de/software/RiboTaper_126/
+
 12 nov 2015, RiboTaper Version 1.2:
 
 Dear user,
